@@ -5,16 +5,24 @@ import {
 } from '@remix-run/node';
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 
 import { createClient } from '@supabase/supabase-js';
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
 import { UploadForm } from '~/components/UploadForm';
+import { useActionData, useNavigation } from '@remix-run/react';
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const { text } = Object.fromEntries(formData);
+  const entries = Object.fromEntries(formData);
+
+  const loader = new PDFLoader(entries['file-upload'], {
+    splitPages: false,
+  });
+
+  const docs = await loader.load();
 
   try {
     const client = createClient(
@@ -23,16 +31,14 @@ export async function action({ request }: ActionFunctionArgs) {
     );
 
     const splitter = RecursiveCharacterTextSplitter.fromLanguage(
-      'markdown',
+      'js',
       {
         chunkSize: 256,
         chunkOverlap: 20,
       }
     );
 
-    const splitDocuments = await splitter.createDocuments([
-      text as string,
-    ]);
+    const splitDocuments = await splitter.splitDocuments(docs);
 
     await SupabaseVectorStore.fromDocuments(
       splitDocuments,
@@ -44,9 +50,23 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     );
 
-    return json({ ok: true }, { status: 200 });
+    return json(
+      {
+        ok: true,
+        document: loader.filePathOrBlob,
+        error: null,
+      },
+      { status: 200 }
+    );
   } catch (e: any) {
-    return json({ error: e.message }, { status: 500 });
+    return json(
+      {
+        ok: false,
+        document: null,
+        error: e.message,
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -58,12 +78,34 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  return (
-    <div className="prose lg:prose-xl container mx-auto p-10 bg-white shadow-md m-10 rounded-md">
-      <h1>Hey, my name is Edgar 👋</h1>
-      <h2>Give me your document</h2>
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
 
-      <UploadForm />
+  const shouldShowUploadForm = !actionData?.ok;
+  const isSubmitting = navigation.state === 'submitting';
+
+  console.log(navigation);
+
+  return (
+    <div className="prose lg:prose-xl prose-slate container mx-auto p-10 bg-white shadow-md m-10 rounded-md">
+      <header className="">
+        <h1>Hey, my name is Edgar 👋</h1>
+        {shouldShowUploadForm ? (
+          <h2 className="text-gray-400">📬 Give me your document</h2>
+        ) : (
+          <h2 className="text-gray-400">
+            💬 Ask me about your document
+          </h2>
+        )}
+      </header>
+
+      {shouldShowUploadForm ? (
+        <UploadForm isSubmitting={isSubmitting} />
+      ) : (
+        <div className="rounded-md bg-slate-900 text-white p-10 my-10">
+          here the prompt TBD...
+        </div>
+      )}
     </div>
   );
 }
