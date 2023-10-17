@@ -136,9 +136,9 @@ export async function chat(messages: VercelChatMessage[] = []) {
     ]);
 
     let resolveWithDocuments: (value: Document[]) => void;
-    const documentPromise = new Promise<Document[]>((resolve) => {
-      resolveWithDocuments = resolve;
-    });
+    // const documentPromise = new Promise<Document[]>((resolve) => {
+    //   resolveWithDocuments = resolve;
+    // });
 
     const retriever = vectorstore.asRetriever({
       callbacks: [
@@ -179,23 +179,23 @@ export async function chat(messages: VercelChatMessage[] = []) {
       chat_history: formatVercelMessages(previousMessages),
     });
 
-    const documents = await documentPromise;
-    const serializedSources = Buffer.from(
-      JSON.stringify(
-        documents.map((doc) => {
-          return {
-            pageContent: doc.pageContent.slice(0, 50) + '...',
-            metadata: doc.metadata,
-          };
-        })
-      )
-    ).toString('base64');
+    //const documents = await documentPromise;
+    // const serializedSources = Buffer.from(
+    //   JSON.stringify(
+    //     documents.map((doc) => {
+    //       return {
+    //         pageContent: doc.pageContent.slice(0, 50) + '...',
+    //         metadata: doc.metadata,
+    //       };
+    //     })
+    //   )
+    // ).toString('base64');
 
     return new StreamingTextResponse(stream, {
-      headers: {
-        'x-message-index': (previousMessages.length + 1).toString(),
-        'x-sources': serializedSources,
-      },
+      // headers: {
+      //   'x-message-index': (previousMessages.length + 1).toString(),
+      //   'x-sources': serializedSources,
+      // },
     });
   } catch (e: any) {
     //return json({ error: e.message }, { status: 500 });

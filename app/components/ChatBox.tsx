@@ -7,9 +7,9 @@ const ChatBox = () => {
     null
   );
 
-  const [sourcesForMessages, setSourcesForMessages] = React.useState<
-    Record<string, any>
-  >({});
+  // const [sourcesForMessages, setSourcesForMessages] = React.useState<
+  //   Record<string, any>
+  // >({});
   const {
     messages,
     input,
@@ -17,20 +17,20 @@ const ChatBox = () => {
     handleSubmit,
     isLoading: chatEndpointIsLoading,
   } = useChat({
-    onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
-      const sources = sourcesHeader
-        ? JSON.parse(atob(sourcesHeader))
-        : [];
-      const messageIndexHeader =
-        response.headers.get('x-message-index');
-      if (sources.length && messageIndexHeader !== null) {
-        setSourcesForMessages({
-          ...sourcesForMessages,
-          [messageIndexHeader]: sources,
-        });
-      }
-    },
+    // onResponse(response) {
+    //   const sourcesHeader = response.headers.get('x-sources');
+    //   const sources = sourcesHeader
+    //     ? JSON.parse(atob(sourcesHeader))
+    //     : [];
+    //   const messageIndexHeader =
+    //     response.headers.get('x-message-index');
+    //   if (sources.length && messageIndexHeader !== null) {
+    //     setSourcesForMessages({
+    //       ...sourcesForMessages,
+    //       [messageIndexHeader]: sources,
+    //     });
+    //   }
+    // },
     onError: (e) => {
       console.log(e);
     },
@@ -58,13 +58,13 @@ const ChatBox = () => {
       >
         {messages.length > 0
           ? [...messages].reverse().map((m, i) => {
-              const sourceKey = (messages.length - 1 - i).toString();
+              //const sourceKey = (messages.length - 1 - i).toString();
               return (
                 <ChatMessageBubble
                   key={m.id}
                   message={m}
                   aiEmoji="🤖"
-                  sources={sourcesForMessages[sourceKey]}
+                  //sources={sourcesForMessages[sourceKey]}
                 />
               );
             })

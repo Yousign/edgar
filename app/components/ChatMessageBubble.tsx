@@ -4,7 +4,7 @@ import type { Message } from 'ai/react';
 const ChatMessageBubble: React.FunctionComponent<{
   message: Message;
   aiEmoji?: string;
-  sources: any[];
+  sources?: any[];
 }> = (props) => {
   const colorClassName =
     props.message.role === 'user'
