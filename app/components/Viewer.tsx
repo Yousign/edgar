@@ -10,7 +10,11 @@ const Viewer: React.FunctionComponent = () => {
   const [numPages, setNumPages] = React.useState<number>();
   const [file, setFile] = React.useState<File | null>(null);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }): void => {
+  const onDocumentLoadSuccess = ({
+    numPages,
+  }: {
+    numPages: number;
+  }): void => {
     setNumPages(numPages);
   };
 
@@ -21,8 +25,15 @@ const Viewer: React.FunctionComponent = () => {
   if (!file) return null;
 
   return (
-    <div className="max-h-screen overflow-auto" ref={viewerRef}>
-      <Document file={file} renderMode="canvas" onLoadSuccess={onDocumentLoadSuccess}>
+    <div
+      className="max-h-screen overflow-auto px-4 py-10"
+      ref={viewerRef}
+    >
+      <Document
+        file={file}
+        renderMode="canvas"
+        onLoadSuccess={onDocumentLoadSuccess}
+      >
         {[...Array(numPages)].map((_, i) => (
           <Page
             width={width}

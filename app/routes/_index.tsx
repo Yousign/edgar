@@ -1,5 +1,13 @@
-import { json, type ActionFunctionArgs, type MetaFunction } from '@remix-run/node';
-import { useActionData, useNavigation, useSearchParams } from '@remix-run/react';
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from '@remix-run/node';
+import {
+  useActionData,
+  useNavigation,
+  useSearchParams,
+} from '@remix-run/react';
 
 import { UploadForm } from '~/components/UploadForm';
 import { ChatBox } from '~/components/ChatBox';
@@ -29,7 +37,10 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Edgar' }, { name: 'description', content: 'Welcome!' }];
+  return [
+    { title: 'Edgar' },
+    { name: 'description', content: 'Welcome!' },
+  ];
 };
 
 export default function Index() {
@@ -50,8 +61,12 @@ export default function Index() {
   return (
     <div className="grid grid-cols-layout bg-pampas">
       <Sidebar />
-      <div className="px-4 py-10">
-        {!docUUID ? <UploadForm isSubmitting={isSubmitting} /> : <Viewer />}
+      <div>
+        {!docUUID ? (
+          <UploadForm isSubmitting={isSubmitting} />
+        ) : (
+          <Viewer />
+        )}
       </div>
       <div className="px-4 py-10 w-[500px] overflow-y-auto max-h-screen">
         {docUUID ? (
