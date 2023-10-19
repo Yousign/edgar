@@ -8,7 +8,7 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
 export async function upload(values: Record<string, any>) {
   const loader = new PDFLoader(values['file-upload'], {
-    splitPages: false,
+    splitPages: true,
   });
 
   const docs = await loader.load();
