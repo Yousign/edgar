@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Form } from '@remix-run/react';
 import { Loader } from 'react-feather';
+import { clearDatabase, storeFile } from '~/data/file-storage.client';
 
 const UploadForm: React.FunctionComponent<{
   isSubmitting: boolean;
-  onFileChange: (file: File | null) => void;
-}> = ({ isSubmitting, onFileChange }) => {
+}> = ({ isSubmitting }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [file, setFile] = React.useState<File | null>(null);
 
@@ -15,8 +15,8 @@ const UploadForm: React.FunctionComponent<{
   };
 
   React.useEffect(() => {
-    onFileChange(file);
-  }, [file, onFileChange]);
+    if (file) clearDatabase(() => storeFile(file));
+  }, [file]);
 
   return (
     <Form method="post" encType="multipart/form-data">
