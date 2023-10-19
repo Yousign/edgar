@@ -4,7 +4,8 @@ import { Loader } from 'react-feather';
 
 const UploadForm: React.FunctionComponent<{
   isSubmitting: boolean;
-}> = ({ isSubmitting }) => {
+  onFileChange: (file: File | null) => void;
+}> = ({ isSubmitting, onFileChange }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [file, setFile] = React.useState<File | null>(null);
 
@@ -12,12 +13,13 @@ const UploadForm: React.FunctionComponent<{
     inputRef.current?.value && (inputRef.current.value = '');
     setFile(null);
   };
+
+  React.useEffect(() => {
+    onFileChange(file);
+  }, [file, onFileChange]);
+
   return (
-    <Form
-      method="post"
-      encType="multipart/form-data"
-      className=" px-4 py-10"
-    >
+    <Form method="post" encType="multipart/form-data">
       <div className="col-span-full">
         <div className="mt-2 flex justify-center rounded-lg border-dashed border-2 border-froly px-6 py-10">
           <div className="text-center">

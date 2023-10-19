@@ -1,13 +1,7 @@
 const Sidebar = () => {
   return (
     <div className="h-screen bg-prussianBlue text-white px-4 py-10">
-      <svg
-        viewBox="0 0 200 260"
-        speed={0}
-        width={200}
-        height={260}
-        className="fill-ebb text-white"
-      >
+      <svg viewBox="0 0 200 260" speed={0} width={200} height={260} className="fill-ebb text-white">
         <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
         <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
         <rect x="0" y="56" rx="3" ry="3" width="410" height="6" />

@@ -47,6 +47,7 @@ export default function Index() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [file, setFile] = React.useState<File | null>(null);
 
   React.useEffect(() => {
     if (actionData?.docUUID) {
@@ -57,14 +58,20 @@ export default function Index() {
   const docUUID = searchParams.get('docUUID') || actionData?.docUUID;
 
   const isSubmitting = navigation.state === 'submitting';
+
   return (
     <div className="grid grid-cols-layout bg-pampas">
       <Sidebar />
-      {!docUUID ? (
-        <UploadForm isSubmitting={isSubmitting} />
-      ) : (
-        <Viewer />
-      )}
+      <div className="px-4 py-10">
+        {!docUUID ? (
+          <UploadForm
+            isSubmitting={isSubmitting}
+            onFileChange={setFile}
+          />
+        ) : (
+          <Viewer file={file} />
+        )}
+      </div>
       <div className="px-4 py-10 w-[500px] overflow-y-auto max-h-screen">
         {docUUID ? (
           <ChatBox docUUID={docUUID} />

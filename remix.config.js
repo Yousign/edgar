@@ -15,4 +15,5 @@ export default {
       url: true,
     },
   },
+  serverDependenciesToBundle: ['react-use'],
 };
