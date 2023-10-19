@@ -5,14 +5,31 @@ const ChatMessageBubble: React.FunctionComponent<{
   message: Message;
   aiEmoji?: string;
   sources?: any[];
+  isComplete?: boolean;
 }> = (props) => {
-  const colorClassName =
-    props.message.role === 'user'
-      ? 'bg-sky-600'
-      : 'bg-slate-50 text-black';
-  const alignmentClassName =
-    props.message.role === 'user' ? 'ml-auto' : 'mr-auto';
-  const prefix = props.message.role === 'user' ? '🧑' : props.aiEmoji;
+  const isUser = props.message.role === 'user';
+  const colorClassName = isUser ? 'bg-sky-600' : 'bg-slate-50 text-black';
+  const alignmentClassName = isUser ? 'ml-auto' : 'mr-auto';
+  const prefix = isUser ? '🧑' : props.aiEmoji;
+
+  const [isSpeaking, setIsSpeaking] = React.useState(false);
+  const utterance = React.useRef<SpeechSynthesisUtterance | null>(null);
+
+  const toggleSpeakMessage = () => {
+    if (isSpeaking) {
+      setIsSpeaking(false);
+      speechSynthesis.cancel();
+    } else {
+      setIsSpeaking(true);
+      utterance.current = new SpeechSynthesisUtterance(props.message.content);
+      utterance.current.lang = 'en-UK';
+      speechSynthesis.speak(utterance.current);
+      utterance.current.onend = () => {
+        setIsSpeaking(false);
+      };
+    }
+  }
+
   return (
     <div
       className={`${alignmentClassName} ${colorClassName} rounded px-4 py-2 max-w-[80%] mb-8 flex not-prose`}
@@ -47,6 +64,7 @@ const ChatMessageBubble: React.FunctionComponent<{
           ''
         )}
       </div>
+      {!isUser && props.isComplete && <div className="ml-2"><button onClick={toggleSpeakMessage}>{isSpeaking ? '⏹️' : '🔈'}</button></div>}
     </div>
   );
 };
