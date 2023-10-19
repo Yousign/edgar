@@ -11,8 +11,8 @@ export function headers() {
   };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
   const values = await request.json();
 
-  return chat(values['messages']);
+  return chat(values['messages'], new URL(request.url).searchParams.get('docUUID'));
 }

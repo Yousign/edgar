@@ -22,6 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
           ok: false,
           document: null,
           error: 'Invalid action',
+          docUUID: null,
         },
         { status: 400 }
       );
@@ -58,7 +59,7 @@ export default function Index() {
       {shouldShowUploadForm ? (
         <UploadForm isSubmitting={isSubmitting} />
       ) : (
-        <ChatBox />
+        <ChatBox docUUID={actionData.docUUID} />
       )}
     </div>
   );

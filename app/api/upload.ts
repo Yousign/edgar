@@ -7,6 +7,7 @@ import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
 export async function upload(values: Record<string, any>) {
+  const docUUID = crypto.randomUUID();
   const loader = new PDFLoader(values['file-upload'], {
     splitPages: true,
   });
@@ -28,6 +29,9 @@ export async function upload(values: Record<string, any>) {
     );
 
     const splitDocuments = await splitter.splitDocuments(docs);
+    splitDocuments.forEach((doc) => {
+      doc.metadata.docUUID = docUUID;
+    });
 
     await SupabaseVectorStore.fromDocuments(
       splitDocuments,
@@ -43,6 +47,7 @@ export async function upload(values: Record<string, any>) {
       {
         ok: true,
         document: loader.filePathOrBlob,
+        docUUID,
         error: null,
       },
       { status: 200 }
@@ -52,6 +57,7 @@ export async function upload(values: Record<string, any>) {
       {
         ok: false,
         document: null,
+        docUUID: null,
         error: e.message,
       },
       { status: 500 }

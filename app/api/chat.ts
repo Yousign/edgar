@@ -82,7 +82,7 @@ const addRawHeaders = function addRawHeaders(headers: Headers) {
  *
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
-export async function chat(messages: VercelChatMessage[] = []) {
+export async function chat(messages: VercelChatMessage[] = [], docUUID: string | null) {
   try {
     const previousMessages = messages.slice(0, -1);
     const currentMessageContent =
@@ -103,6 +103,7 @@ export async function chat(messages: VercelChatMessage[] = []) {
         client,
         tableName: 'documents',
         queryName: 'match_documents',
+        filter: docUUID ? (rpc) => rpc.filter('metadata->>docUUID', 'eq', docUUID) : undefined,
       }
     );
 
