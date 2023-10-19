@@ -65,6 +65,7 @@ const ChatBox: React.FunctionComponent<{ docUUID: string | null }> = ({ docUUID 
                   key={m.id}
                   message={m}
                   aiEmoji="🤖"
+                  isComplete={i < messages.length - 2 || !chatEndpointIsLoading}
                   //sources={sourcesForMessages[sourceKey]}
                 />
               );

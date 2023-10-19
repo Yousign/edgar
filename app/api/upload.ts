@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { json } from '@remix-run/node';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
