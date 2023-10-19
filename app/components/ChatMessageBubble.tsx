@@ -8,12 +8,16 @@ const ChatMessageBubble: React.FunctionComponent<{
   isComplete?: boolean;
 }> = (props) => {
   const isUser = props.message.role === 'user';
-  const colorClassName = isUser ? 'bg-sky-600' : 'bg-slate-50 text-black';
+  const colorClassName = isUser
+    ? 'bg-juniper text-white'
+    : 'bg-pampas text-black';
   const alignmentClassName = isUser ? 'ml-auto' : 'mr-auto';
   const prefix = isUser ? '🧑' : props.aiEmoji;
 
   const [isSpeaking, setIsSpeaking] = React.useState(false);
-  const utterance = React.useRef<SpeechSynthesisUtterance | null>(null);
+  const utterance = React.useRef<SpeechSynthesisUtterance | null>(
+    null
+  );
 
   const toggleSpeakMessage = () => {
     if (isSpeaking) {
@@ -21,14 +25,16 @@ const ChatMessageBubble: React.FunctionComponent<{
       speechSynthesis.cancel();
     } else {
       setIsSpeaking(true);
-      utterance.current = new SpeechSynthesisUtterance(props.message.content);
-      utterance.current.lang = 'en-UK';
+      utterance.current = new SpeechSynthesisUtterance(
+        props.message.content
+      );
+      utterance.current.lang = 'fr-FR';
       speechSynthesis.speak(utterance.current);
       utterance.current.onend = () => {
         setIsSpeaking(false);
       };
     }
-  }
+  };
 
   return (
     <div
@@ -64,7 +70,13 @@ const ChatMessageBubble: React.FunctionComponent<{
           ''
         )}
       </div>
-      {!isUser && props.isComplete && <div className="ml-2"><button onClick={toggleSpeakMessage}>{isSpeaking ? '⏹️' : '🔈'}</button></div>}
+      {!isUser && props.isComplete && (
+        <div className="ml-2">
+          <button onClick={toggleSpeakMessage}>
+            {isSpeaking ? '⏹️' : '🔈'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

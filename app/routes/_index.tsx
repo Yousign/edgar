@@ -3,12 +3,18 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from '@remix-run/node';
-import { useActionData, useNavigation, useSearchParams } from '@remix-run/react';
+import {
+  useActionData,
+  useNavigation,
+  useSearchParams,
+} from '@remix-run/react';
 
 import { UploadForm } from '~/components/UploadForm';
 import { ChatBox } from '~/components/ChatBox';
 import { upload } from '~/api/upload';
 import * as React from 'react';
+import { Sidebar } from '~/components/Sidebar';
+import { Viewer } from '~/components/Viewer';
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -51,25 +57,23 @@ export default function Index() {
   const docUUID = searchParams.get('docUUID') || actionData?.docUUID;
 
   const isSubmitting = navigation.state === 'submitting';
-
   return (
-    <div className="prose lg:prose-xl prose-slate container mx-auto p-10 bg-white shadow-md m-10 rounded-md">
-      <header className="">
-        <h1>Hey, my name is Edgar 👋</h1>
-        {docUUID ? (
-          <h2 className="text-gray-400">
-            💬 Ask me something about your document
-          </h2>
-        ) : (
-          <h2 className="text-gray-400">📬 Give me your document</h2>
-        )}
-      </header>
-
-      {docUUID ? (
-        <ChatBox docUUID={docUUID} />
-        ) : (
+    <div className="grid grid-cols-layout bg-pampas">
+      <Sidebar />
+      {!docUUID ? (
         <UploadForm isSubmitting={isSubmitting} />
+      ) : (
+        <Viewer />
       )}
+      <div className="px-4 py-10 w-[500px] overflow-y-auto max-h-screen">
+        {docUUID ? (
+          <ChatBox docUUID={docUUID} />
+        ) : (
+          <div className=" w-[50px] h-[50px] rounded-full bd-white shadow-md overflow-hidden p-1">
+            <img src="/edgar.png" alt="" />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
