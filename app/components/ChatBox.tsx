@@ -6,9 +6,7 @@ import { ChatMessageBubble } from './ChatMessageBubble';
 const ChatBox: React.FunctionComponent<{
   docUUID: string | null;
 }> = ({ docUUID }) => {
-  const messageContainerRef = React.useRef<HTMLDivElement | null>(
-    null
-  );
+  const messageContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   // const [sourcesForMessages, setSourcesForMessages] = React.useState<
   //   Record<string, any>
@@ -68,8 +66,7 @@ const ChatBox: React.FunctionComponent<{
           , votre assistant virtuel.👋
         </p>
         <p>
-          Je suis là pour vous aider à{' '}
-          <strong>analyser votre document</strong>.
+          Je suis là pour vous aider à <strong>analyser votre document</strong>.
         </p>
       </div>
       <div
@@ -84,9 +81,7 @@ const ChatBox: React.FunctionComponent<{
                   key={m.id}
                   message={m}
                   aiEmoji="🤖"
-                  isComplete={
-                    i < messages.length - 2 || !chatEndpointIsLoading
-                  }
+                  isComplete={i < messages.length - 2 || !chatEndpointIsLoading}
                   //sources={sourcesForMessages[sourceKey]}
                 />
               );

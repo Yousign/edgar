@@ -57,14 +57,17 @@ export default function Index() {
   const docUUID = searchParams.get('docUUID') || actionData?.docUUID;
 
   const isSubmitting = navigation.state === 'submitting';
+
   return (
     <div className="grid grid-cols-layout bg-pampas">
       <Sidebar />
-      {!docUUID ? (
-        <UploadForm isSubmitting={isSubmitting} />
-      ) : (
-        <Viewer />
-      )}
+      <div>
+        {!docUUID ? (
+          <UploadForm isSubmitting={isSubmitting} />
+        ) : (
+          <Viewer />
+        )}
+      </div>
       <div className="px-4 py-10 w-[500px] overflow-y-auto max-h-screen">
         {docUUID ? (
           <ChatBox docUUID={docUUID} />

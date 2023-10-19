@@ -8,15 +8,9 @@ import { PromptTemplate } from 'langchain/prompts';
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import type { Document } from 'langchain/document';
 import { RunnableSequence } from 'langchain/schema/runnable';
-import {
-  BytesOutputParser,
-  StringOutputParser,
-} from 'langchain/schema/output_parser';
+import { BytesOutputParser, StringOutputParser } from 'langchain/schema/output_parser';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import {
-  ANSWER_TEMPLATE,
-  CONDENSE_QUESTION_TEMPLATE,
-} from '~/data/prompt-template';
+import { ANSWER_TEMPLATE, CONDENSE_QUESTION_TEMPLATE } from '~/data/prompt-template';
 
 const combineDocumentsFn = (docs: Document[], separator = '\n\n') => {
   const serializedDocs = docs.map((doc) => doc.pageContent);
@@ -36,9 +30,7 @@ const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
   return formattedDialogueTurns.join('\n');
 };
 
-const condenseQuestionPrompt = PromptTemplate.fromTemplate(
-  CONDENSE_QUESTION_TEMPLATE
-);
+const condenseQuestionPrompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_TEMPLATE);
 
 const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
 
@@ -85,27 +77,20 @@ const addRawHeaders = function addRawHeaders(headers: Headers) {
 export async function chat(messages: VercelChatMessage[] = [], docUUID: string | null) {
   try {
     const previousMessages = messages.slice(0, -1);
-    const currentMessageContent =
-      messages[messages.length - 1].content;
+    const currentMessageContent = messages[messages.length - 1].content;
 
     const model = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo',
       temperature: 0.2,
     });
 
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PRIVATE_KEY!
-    );
-    const vectorstore = new SupabaseVectorStore(
-      new OpenAIEmbeddings(),
-      {
-        client,
-        tableName: 'documents',
-        queryName: 'match_documents',
-        filter: docUUID ? (rpc) => rpc.filter('metadata->>docUUID', 'eq', docUUID) : undefined,
-      }
-    );
+    const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PRIVATE_KEY!);
+    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
+      client,
+      tableName: 'documents',
+      queryName: 'match_documents',
+      filter: docUUID ? (rpc) => rpc.filter('metadata->>docUUID', 'eq', docUUID) : undefined,
+    });
 
     /**
      * We use LangChain Expression Language to compose two chains.
@@ -138,10 +123,7 @@ export async function chat(messages: VercelChatMessage[] = [], docUUID: string |
 
     const answerChain = RunnableSequence.from([
       {
-        context: RunnableSequence.from([
-          (input) => input.question,
-          retrievalChain,
-        ]),
+        context: RunnableSequence.from([(input) => input.question, retrievalChain]),
         chat_history: (input) => input.chat_history,
         question: (input) => input.question,
       },

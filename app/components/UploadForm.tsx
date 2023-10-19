@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Form } from '@remix-run/react';
 import { Loader } from 'react-feather';
+import { clearDatabase, storeFile } from '~/data/file-storage.client';
 
 const UploadForm: React.FunctionComponent<{
   isSubmitting: boolean;
@@ -12,11 +13,16 @@ const UploadForm: React.FunctionComponent<{
     inputRef.current?.value && (inputRef.current.value = '');
     setFile(null);
   };
+
+  React.useEffect(() => {
+    if (file) clearDatabase(() => storeFile(file));
+  }, [file]);
+
   return (
     <Form
       method="post"
       encType="multipart/form-data"
-      className=" px-4 py-10"
+      className="px-4 py-10"
     >
       <div className="col-span-full">
         <div className="mt-2 flex justify-center rounded-lg border-dashed border-2 border-froly px-6 py-10">

@@ -16,33 +16,23 @@ export async function upload(values: Record<string, any>) {
   const docs = await loader.load();
 
   try {
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PRIVATE_KEY!
-    );
+    const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PRIVATE_KEY!);
 
-    const splitter = RecursiveCharacterTextSplitter.fromLanguage(
-      'js',
-      {
-        chunkSize: 256,
-        chunkOverlap: 20,
-      }
-    );
+    const splitter = RecursiveCharacterTextSplitter.fromLanguage('js', {
+      chunkSize: 256,
+      chunkOverlap: 20,
+    });
 
     const splitDocuments = await splitter.splitDocuments(docs);
     splitDocuments.forEach((doc) => {
       doc.metadata.docUUID = docUUID;
     });
 
-    await SupabaseVectorStore.fromDocuments(
-      splitDocuments,
-      new OpenAIEmbeddings(),
-      {
-        client,
-        tableName: 'documents',
-        queryName: 'match_documents',
-      }
-    );
+    await SupabaseVectorStore.fromDocuments(splitDocuments, new OpenAIEmbeddings(), {
+      client,
+      tableName: 'documents',
+      queryName: 'match_documents',
+    });
 
     return json(
       {
