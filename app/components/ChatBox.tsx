@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useChat } from 'ai/react';
 import { ChatMessageBubble } from './ChatMessageBubble';
 
-const ChatBox = () => {
+const ChatBox: React.FunctionComponent<{ docUUID: string | null }> = ({ docUUID }) => {
   const messageContainerRef = React.useRef<HTMLDivElement | null>(
     null
   );
@@ -17,6 +17,7 @@ const ChatBox = () => {
     handleSubmit,
     isLoading: chatEndpointIsLoading,
   } = useChat({
+    api: '/api/chat?docUUID=' + docUUID,
     // onResponse(response) {
     //   const sourcesHeader = response.headers.get('x-sources');
     //   const sources = sourcesHeader
